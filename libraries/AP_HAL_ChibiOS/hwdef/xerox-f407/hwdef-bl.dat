@@ -15,8 +15,9 @@ STM32_ST_USE_TIMER 5
 # flash size
 FLASH_SIZE_KB 1024
 
-# location of application code. first flash sector in F407 is 16KB which is dedicated to bootloader so the application code should start at least at the next sector (so that means with 16KB offset)
-FLASH_BOOTLOADER_LOAD_KB 16
+# location of application code. first flash sector in F407 is 16KB which is dedicated to bootloader so the application code should start at least at the next sector (so that means with 16KB offset).
+# we also dedicate 32KB to store default parameters
+FLASH_BOOTLOADER_LOAD_KB 48
 
 # max flash allocated to bootloader is 16KB
 FLASH_USE_MAX_KB 16
