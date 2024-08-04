@@ -1,0 +1,42 @@
+# hw definition file for processing by chibios_hwdef.py
+# for mamad's f407 FC bootloader. (send help plsssss)
+
+MCU STM32F4xx STM32F407xx
+
+APJ_BOARD_ID 1501
+
+OSCILLATOR_HZ 8000000
+
+
+# should be a 32-bit timer
+STM32_ST_USE_TIMER 5
+
+
+# flash size
+FLASH_SIZE_KB 1024
+
+# location of application code. first flash sector in F407 is 16KB which is dedicated to bootloader so the application code should start at least at the next sector (so that means with 16KB offset)
+FLASH_BOOTLOADER_LOAD_KB 16
+
+# max flash allocated to bootloader is 16KB
+FLASH_USE_MAX_KB 16
+
+# bootloader is stored at the start of the flash so no reservation is needed
+FLASH_RESERVE_START_KB 0
+
+# default all pins low to avoid ESD issues
+DEFAULTGPIO OUTPUT LOW PULLDOWN
+
+# order of UARTs (and USB)
+SERIAL_ORDER USART2
+
+PD6 LED_BOOTLOADER OUTPUT
+PD5 LED_ACTIVITY OUTPUT
+define HAL_LED_ON 1
+
+
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+PA2 USART2_TX USART2
+PA3 USART2_RX USART2
