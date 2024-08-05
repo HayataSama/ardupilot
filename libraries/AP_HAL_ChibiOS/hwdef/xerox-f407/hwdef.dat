@@ -1,0 +1,168 @@
+# hw definition file for processing by chibios_hwdef.py
+# for mamad's f407 FC bootloader. (send help plsssss)
+
+
+# -- general configuration ------------------------------------------
+
+# MCU class and specific type
+MCU STM32F4xx STM32F407xx
+
+# board ID for firmware load
+APJ_BOARD_ID 1501
+
+# optimize for space
+env OPTIMIZE -Os
+
+# location of application code. first flash sector in F407 is 16KB which is dedicated to bootloader so the application code should start at least at the next sector (so that means with 16KB offset).
+# we also dedicate 32KB to store default parameters
+FLASH_SIZE_KB 1024
+FLASH_RESERVE_START_KB 48
+
+# this refers to how much space is allocated to parameters on flash storage
+# STORAGE_FLASH_PAGE indicates that this storage starts at the second page (sector) in flash
+STORAGE_FLASH_PAGE 1
+define HAL_STORAGE_SIZE 15360
+
+
+# crystal frequency
+OSCILLATOR_HZ 8000000
+
+# this is the STM32 timer that ChibiOS will use for the low level
+# driver. This must be a 32 bit timer. We currently only support
+# timers 2, 3, 4, 5 and 21. See hal_st_lld.c in ChibiOS for details
+
+# ChibiOS system timer
+STM32_ST_USE_TIMER 5
+
+
+
+# the normal usage of this ordering is:
+# 1) SERIAL0: console (primary mavlink, usually USB)
+# 2) SERIAL3: primary GPS
+# 3) SERIAL1: telem1
+# 4) SERIAL2: telem2
+# 5) SERIAL4: GPS2
+# 6) SERIAL5: extra UART (usually RTOS debug console)
+SERIAL_ORDER USART2
+
+
+
+
+
+
+
+# this defines the default maximum clock on I2C devices.
+define HAL_I2C_MAX_CLOCK 100000
+I2C_ORDER I2C2 I2C1
+
+
+
+
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+# USART2 serial0 console
+PA2 USART2_TX USART2
+PA3 USART2_RX USART2
+
+
+PB6 I2C1_SCL I2C1
+PB7 I2C1_SDA I2C1
+
+PB10 I2C2_SCL I2C2
+PB11 I2C2_SDA I2C2
+
+
+
+
+# Motor order implies Betaflight/X for standard ESCs:
+#  4  2
+#   \/
+#   /\
+#  3  1
+define HAL_FRAME_TYPE_DEFAULT 12
+
+# Motor PWM
+PA6 TIM3_CH1 TIM3 PWM(1) GPIO(31) # M2
+PA7 TIM3_CH2 TIM3 PWM(2) GPIO(32) # M4
+PC8 TIM3_CH3 TIM3 PWM(3) GPIO(65) # M1
+PC9 TIM3_CH4 TIM3 PWM(4) GPIO(66) # M3
+
+
+
+define STM32_PWM_USE_ADVANCED TRUE
+# RC PWM input
+PA0 TIM2_CH1 TIM2 PWM(5) GPIO(23) RCIN(5) NODMA
+PB14 TIM12_CH1 TIM12 PWM(6) GPIO(53) RCIN(2) NODMA # TIM12 doesn't have dma
+PC6 TIM8_CH1 TIM8 PWM(7) GPIO(63) RCIN(1) NODMA
+PE5 TIM9_CH1 TIM9 PWM(8) GPIO(4) RCIN(4) NODMA # TIM9 doesn't have dma
+PE9 TIM1_CH1 TIM1 PWM(9) GPIO(40) RCIN(3) NODMA
+
+
+
+# check both I2C addresses
+IMU Invensense I2C:1:0x68 ROTATION_NONE
+IMU Invensense I2C:1:0x69 ROTATION_NONE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# LED setup
+define AP_NOTIFY_GPIO_LED_RGB_ENABLED 1
+PD5 LED_RED OUTPUT GPIO(86) # LED 6
+PD6 LED_GREEN OUTPUT GPIO(87) # LED 5
+PD7 LED_BLUE OUTPUT GPIO(88) # LED 3
+PE2 LED_YELOW OUTPUT GPIO(1) # LED 4
+
+define AP_NOTIFY_GPIO_LED_RGB_RED_PIN 10
+define AP_NOTIFY_GPIO_LED_RGB_GREEN_PIN 11
+define AP_NOTIFY_GPIO_LED_RGB_BLUE_PIN 12
+
+
+
+
+PB0 BATT_VOLTAGE_SENS ADC1 SCALE(2)
+
+
+
+
+
+# use UART for stdout, so no STDOUT_SERIAL  --------------------------------
+#STDOUT_SERIAL SD5
+#STDOUT_BAUDRATE 57600
+
+
+
+
+
+# remove unused features for smaller binary
+include ../include/minimize_features.inc
+# define HAL_MSP_ENABLED 1
